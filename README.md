@@ -24,13 +24,13 @@ How to run:
     * [link to song 60]
     * [timestamp to start song 60]
     
-    Example:
-      https://www.youtube.com/watch?v=DAGqTRbuExk <br />
-      1:01 <br />
-      1:04 <br />
-      https://www.youtube.com/watch?v=4JW9zHZI3VA <br />
-      1:30 <br />
-      etc. <br />
+      Example: <br />
+        https://www.youtube.com/watch?v=DAGqTRbuExk <br />
+        1:01 <br />
+        1:04 <br />
+        https://www.youtube.com/watch?v=4JW9zHZI3VA <br />
+        1:30 <br />
+        etc. <br />
       
 Notes on the code and using it:
   - The audio cannot be extracted by youtube-dl. This creates music files without proper headers which cannot be read or edited by ffmpeg.

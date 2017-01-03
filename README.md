@@ -1,8 +1,8 @@
 This Python file can be used to create unique power hour mp3 files from your own playlists.
 
-The song will change once every minute and give some indication when it changes.
-At each song change, participants are meant to take one shot of beer.
-For more information on power hours, check out: https://en.wikipedia.org/wiki/Power_hour
+The song will change once every minute and give some indication when it changes. <br />
+At each song change, participants are meant to take one shot of beer. <br />
+For more information on power hours, check out: https://en.wikipedia.org/wiki/Power_hour <br />
 
 In order for this code to run properly, a few installations are required.
   1. Python 2.7+
@@ -25,12 +25,12 @@ How to run:
     * [timestamp to start song 60]
     
     Example:
-      https://www.youtube.com/watch?v=DAGqTRbuExk\n
-      1:01\n
-      1:04\n
-      https://www.youtube.com/watch?v=4JW9zHZI3VA\n
-      1:30\n
-      etc.
+      https://www.youtube.com/watch?v=DAGqTRbuExk <br />
+      1:01 <br />
+      1:04 <br />
+      https://www.youtube.com/watch?v=4JW9zHZI3VA <br />
+      1:30 <br />
+      etc. <br />
       
 Notes on the code and using it:
   - The audio cannot be extracted by youtube-dl. This creates music files without proper headers which cannot be read or edited by ffmpeg.

@@ -30,10 +30,12 @@ How to run:
         1:04 <br />
         https://www.youtube.com/watch?v=4JW9zHZI3VA <br />
         1:30 <br />
+        https://www.youtube.com/watch?v=OcPLPy5WKt0 <br />
+        0:00 <br />
         etc. <br />
       
 Notes on the code and using it:
   - The audio cannot be extracted by youtube-dl. This creates music files without proper headers which cannot be read or edited by ffmpeg.
-    - In order to circumvent this, the video is first downloaded as an mp4, converted to an mp3, and then cut to the proper time.
+    - In order to circumvent this, each video is first downloaded as an mp4, converted to an mp3, and then cut to the proper time.
   - Your text file should have a total of 123 lines.
   - Timestamps should be provided in mm:ss format. I have not implemented a function to convert from hh:mm:ss, but feel free to edit the timeStampConvert function!

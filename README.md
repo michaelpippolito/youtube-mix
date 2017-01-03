@@ -8,7 +8,8 @@ In order for this code to run properly, a few installations are required.
   1. Python 2.7+
   2. The pydub library, available at: https://github.com/jiaaro/pydub#installation
   3. youtube-dl is used to download the songs, available at: https://rg3.github.io/youtube-dl/download.html
-  4. ffmpeg is used to convert the songs to mp3 and cut them to the proper length, available at: https://ffmpeg.zeranoe.com/builds/ <br />
+  4. ffmpeg is used to convert the songs to mp3 and cut them to the proper length, available at: https://ffmpeg.zeranoe.com/builds/
+
 Note: this was built and run only on Ubuntu 14.04 - though it should run on another OS with mild changes.
 
 How to run:

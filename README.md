@@ -25,11 +25,11 @@ How to run:
     * [timestamp to start song 60]
     
     Example:
-      https://www.youtube.com/watch?v=DAGqTRbuExk
-      1:01
-      1:04
-      https://www.youtube.com/watch?v=4JW9zHZI3VA
-      1:30
+      https://www.youtube.com/watch?v=DAGqTRbuExk\n
+      1:01\n
+      1:04\n
+      https://www.youtube.com/watch?v=4JW9zHZI3VA\n
+      1:30\n
       etc.
       
 Notes on the code and using it:

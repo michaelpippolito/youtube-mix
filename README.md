@@ -4,13 +4,13 @@ The song will change once every minute and give some indication when it changes.
 At each song change, participants are meant to take one shot of beer. <br />
 For more information on power hours, check out: https://en.wikipedia.org/wiki/Power_hour <br />
 
-In order for this code to run properly, a few installations are required.
+In order for this code to run properly, a few installations are required. On Windows you must add Python, youtube-dl, and ffmpeg to the Path Environment Variable.
   1. Python 2.7+
   2. The pydub library, available at: https://github.com/jiaaro/pydub#installation
   3. youtube-dl is used to download the songs, available at: https://rg3.github.io/youtube-dl/download.html
   4. ffmpeg is used to convert the songs to mp3 and cut them to the proper length, available at: https://ffmpeg.zeranoe.com/builds/
 
-Note: this was built and run only on Ubuntu 14.04 - though it should run on another OS with mild changes.
+Note: the program has successfully been run on Ubuntu 16.04 and Windows 10.
 
 How to run:
   - Create a text file called "powerhour.txt" which much be organized in the following manner:

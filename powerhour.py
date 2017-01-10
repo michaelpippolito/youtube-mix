@@ -48,7 +48,10 @@ for i in range(1,61) :
         subprocess.call("ffmpeg -v quiet -i " + curSong + ".mp4 -ab 160k -ac 2 -ar 44100 -vn " + curSong + ".mp3", shell=True)
 
         song = AudioSegment.from_mp3(curSong + ".mp3")
-        song = song[start:end]
+        if len(song) < end :
+            song = song[start:]
+        else :
+            song = song[start:end]
         song.export("real.mp3", format="mp3")
 
         os.remove(curSong + ".mp4")

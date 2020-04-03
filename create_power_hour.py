@@ -178,9 +178,15 @@ def create_music_file(video_file, output_music_file):
         sys.exit(1)
 
 def remove_intermediate_files(file_list):
+    deleted_beep = False
     for file in file_list:
         try:
-            os.remove(file)
+            if file == "0_beep.ts":
+                if not deleted_beep:
+                    os.remove(file)
+                    deleted_beep = True
+            else:
+                os.remove(file)
         except Exception as e:
             print(e)
 

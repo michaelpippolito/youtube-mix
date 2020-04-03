@@ -179,7 +179,10 @@ def create_music_file(video_file, output_music_file):
 
 def remove_intermediate_files(file_list):
     for file in file_list:
-        os.remove(file)
+        try:
+            os.remove(file)
+        except Exception as e:
+            print(e)
 
 
 if __name__ == "__main__":

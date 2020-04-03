@@ -1,5 +1,6 @@
 import os
 import sys
+import argparse
 
 import youtube_dl
 
@@ -8,10 +9,10 @@ import youtube_dl
 # list.txt should contain a list of URLs, Timestamps, and Track Names
 
 LIST_FILE_NAME = "list.txt"
+BEEP_FILE_NAME = "beep.txt"
 VIDEO_EXTENSION = "mp4"
 MUSIC_EXTENSION = "mp3"
 INTERMEDIATE_FILE_EXTENSION = "ts"
-SECONDS_PER_SONG = 60
 
 TRIM_SONG_COMMAND = "ffmpeg -y -loglevel panic -i \"{}\" -ss {} -t {} \"{}\""
 CREATE_INTERMEDIATE_FILE_COMMAND = "ffmpeg -y -loglevel panic -i \"{}\" -c copy -bsf:v h264_mp4toannexb -f mpegts \"{}\""
@@ -21,10 +22,27 @@ CREATE_SONG_FILE_COMMAND = "ffmpeg -y -loglevel panic -i \"{}\" \"{}\""
 
 def get_arguments(argv):
     try:
-        directory = str(argv[1])
-        return directory
+        parser = argparse.ArgumentParser()
+        parser.add_argument(
+            "--directory",
+            "-d",
+            help="path to the directory with list.txt",
+            type=str,
+            required=True
+        )
+        parser.add_argument(
+            "--beep",
+            "-b",
+            help="True or False; does this include a beep between songs?",
+            type=bool,
+            default=False,
+            required=False
+        )
+
+        parsed_arguments = parser.parse_args()
+        return parsed_arguments
     except Exception as e:
-        print("ERROR: List file location not specified")
+        print("ERROR: Could not parse arguments")
         print(e)
         sys.exit(1)
 
@@ -60,8 +78,9 @@ def get_best_format_for_song(url, file_name):
 def timestamp_to_seconds(timestamp, file_name):
     try:
         print("\t\tConverting timestamp for", file_name)
-        minutes = int(song_timestamp[0:timestamp.index(":")])
-        seconds = int(song_timestamp[timestamp.index(":") + 1:])
+
+        minutes = int(timestamp[0:timestamp.index(":")])
+        seconds = int(timestamp[timestamp.index(":") + 1:])
         start_time = (minutes * 60) + seconds
 
         print("\t\tDone!")
@@ -89,14 +108,14 @@ def download_song(download_url, download_file_name, download_format):
         sys.exit(1)
 
 
-def trim_song(untrimmed_file_name, start_time, song_num):
+def trim_song(untrimmed_file_name, start_time, song_num, seconds_per_song):
     try:
         print("\t\tTrimming", untrimmed_file_name)
         trimmed_file_name = str(song_num) + "_" + untrimmed_file_name
         trim_command = TRIM_SONG_COMMAND.format(
             untrimmed_file_name,
             start_time,
-            SECONDS_PER_SONG,
+            seconds_per_song,
             trimmed_file_name
         )
         os.system(trim_command)
@@ -131,14 +150,13 @@ def concatenate_files(file_list, output_file):
     try:
         print("Merging files...")
         input_files = "|".join(file_list)
+        print(input_files)
         concat_command = CONCATENATE_FILES_COMMAND.format(
             input_files,
             output_file
         )
         os.system(concat_command)
 
-        for file in file_list:
-            os.remove(file)
         print("Done!")
     except Exception as e:
         print("ERROR: Could not merge video files")
@@ -160,9 +178,18 @@ def create_music_file(video_file, output_music_file):
         print(e)
         sys.exit(1)
 
+def remove_intermediate_files(file_list):
+    for file in file_list:
+        os.remove(file)
+
 
 if __name__ == "__main__":
-    power_hour_directory = get_arguments(sys.argv)
+    args = get_arguments(sys.argv)
+    power_hour_directory = args.directory
+    include_beep = args.beep
+
+    seconds_per_song = 60
+
     power_hour_video_output_file = (power_hour_directory + "/powerhour." + VIDEO_EXTENSION).replace("\n", "")
     power_hour_music_output_file = (power_hour_directory + "/powerhour." + MUSIC_EXTENSION).replace("\n", "")
 
@@ -170,6 +197,28 @@ if __name__ == "__main__":
     list_file_path = power_hour_directory + "/" + LIST_FILE_NAME
     list_file = open(list_file_path, "r")
     list_file_all_lines = []
+
+    if include_beep:
+        beep_file_path = power_hour_directory + "/" + BEEP_FILE_NAME
+        beep_file = open(beep_file_path, "r")
+        beep_file_all_lines = []
+
+        for line in beep_file:
+            beep_file_all_lines.append(line)
+
+        beep_url = beep_file_all_lines[0]
+        beep_start = timestamp_to_seconds(beep_file_all_lines[1], "beep")
+        beep_end = timestamp_to_seconds(beep_file_all_lines[2], "beep")
+        beep_length = beep_end - beep_start
+        beep_file_name = ("beep." + VIDEO_EXTENSION).replace("\n", "")
+        beep_format = get_best_format_for_song(beep_url, beep_file_name)
+
+        seconds_per_song = seconds_per_song - beep_length
+
+        download_song(beep_url, beep_file_name, beep_format)
+        trimmed_beep_file_name = trim_song(beep_file_name, beep_start, 0, beep_length)
+        intermediate_beep_file_name = create_intermediate_file(trimmed_beep_file_name)
+
 
     for line in list_file:
         list_file_all_lines.append(line)
@@ -192,14 +241,19 @@ if __name__ == "__main__":
         song_format = get_best_format_for_song(song_url, song_file_name)
         song_start = timestamp_to_seconds(song_timestamp, song_file_name)
         download_song(song_url, song_file_name, song_format)
-        trimmed_song_file_name = trim_song(song_file_name, song_start, song_num)
+        trimmed_song_file_name = trim_song(song_file_name, song_start, song_num, seconds_per_song)
         intermediate_song_file_name = create_intermediate_file(trimmed_song_file_name)
 
         intermediate_file_list.append(intermediate_song_file_name)
+        if include_beep:
+            intermediate_file_list.append(intermediate_beep_file_name)
         song_num += 1
 
     concatenate_files(intermediate_file_list, power_hour_video_output_file)
     print("Created", power_hour_video_output_file)
     create_music_file(power_hour_video_output_file, power_hour_music_output_file)
     print("Created", power_hour_music_output_file)
+    print("Removing intermediate files...")
+    remove_intermediate_files(intermediate_file_list)
+
     print("Done!")

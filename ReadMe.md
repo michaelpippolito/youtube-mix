@@ -9,8 +9,15 @@
 
 ## Input
 The program input is a directory that includes a `list.txt` file.
+This should be provided with `-d` or `--directory`.
 
-The file should be structured with each value on a new line as follows:
+If you want to include a sound that plays between songs, the directory must
+also include a `beep.txt` file, and the optional argument `-b` or `--beep`
+must be provided and be `True` (defaults to `False`).
+
+The length of any given video must not exceed 59:59
+
+The `list.txt` file should be structured with each value on a new line as follows:
 > video_url_1
 >
 > timestamp_1 (what time should the video start, i.e. 1:20)
@@ -24,7 +31,16 @@ The file should be structured with each value on a new line as follows:
 >name_2
 
 and so on
-### Example input
+
+The `beep.txt` file should have a single link, starting timestamp, and ending timestamp;
+each value on a separate line
+> beep_video_url
+>
+>starting_timestamp
+>
+>ending_timestamp
+
+### Example list input
 >https://www.youtube.com/watch?v=tGsKzZtRwxw
 >
 >0:00
@@ -50,10 +66,19 @@ and so on
 >
 >All Star
 
+### Example beep input
+>https://www.youtube.com/watch?v=EqH5vmh6oJk
+>
+>0:00
+>
+>0:04
+
 ## How to run
 Execute `create_power_hour.py` with an argument to the directory with list.txt.
 
-`python create_power_hour.py C:\[directory_with_list.txt]`
+`python create_power_hour.py -d [directory_with_text_files]`
+
+`python create_power_hour.py -d [directory_with_text_files.txt] -b [include_beep?]`
 
 ## Output
 Two files will be created in the list.txt directory powerhour.mp4 and powerhour.mp3

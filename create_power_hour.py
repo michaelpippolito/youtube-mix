@@ -150,7 +150,6 @@ def concatenate_files(file_list, output_file):
     try:
         print("Merging files...")
         input_files = "|".join(file_list)
-        print(input_files)
         concat_command = CONCATENATE_FILES_COMMAND.format(
             input_files,
             output_file

@@ -177,6 +177,33 @@ def create_music_file(video_file, output_music_file):
         print(e)
         sys.exit(1)
 
+def get_beep_file_and_length():
+    try:
+        beep_file_path = power_hour_directory + "/" + BEEP_FILE_NAME
+        beep_file = open(beep_file_path, "r")
+        beep_file_all_lines = []
+
+        for line in beep_file:
+            beep_file_all_lines.append(line)
+
+        beep_url = beep_file_all_lines[0]
+        beep_start = timestamp_to_seconds(beep_file_all_lines[1], "beep")
+        beep_end = timestamp_to_seconds(beep_file_all_lines[2], "beep")
+        beep_length = beep_end - beep_start
+        beep_file_name = ("beep." + VIDEO_EXTENSION).replace("\n", "")
+        beep_format = get_best_format_for_song(beep_url, beep_file_name)
+
+        download_song(beep_url, beep_file_name, beep_format)
+        trimmed_beep_file_name = trim_song(beep_file_name, beep_start, 0, beep_length)
+        intermediate_beep_file_name = create_intermediate_file(trimmed_beep_file_name)
+
+        return intermediate_beep_file_name, beep_length
+    except Exception as e:
+        print("ERROR: Could not download beep")
+        print(e)
+        sys.exit(1)
+
+
 def remove_intermediate_files(file_list):
     deleted_beep = False
     for file in file_list:
@@ -202,37 +229,19 @@ if __name__ == "__main__":
     power_hour_music_output_file = (power_hour_directory + "/powerhour." + MUSIC_EXTENSION).replace("\n", "")
 
     print("Creating power hour from", power_hour_directory, "...")
+
+    if include_beep:
+        intermediate_beep_file_name, beep_length = get_beep_file_and_length()
+        seconds_per_song = seconds_per_song - beep_length
+
     list_file_path = power_hour_directory + "/" + LIST_FILE_NAME
     list_file = open(list_file_path, "r")
     list_file_all_lines = []
-
-    if include_beep:
-        beep_file_path = power_hour_directory + "/" + BEEP_FILE_NAME
-        beep_file = open(beep_file_path, "r")
-        beep_file_all_lines = []
-
-        for line in beep_file:
-            beep_file_all_lines.append(line)
-
-        beep_url = beep_file_all_lines[0]
-        beep_start = timestamp_to_seconds(beep_file_all_lines[1], "beep")
-        beep_end = timestamp_to_seconds(beep_file_all_lines[2], "beep")
-        beep_length = beep_end - beep_start
-        beep_file_name = ("beep." + VIDEO_EXTENSION).replace("\n", "")
-        beep_format = get_best_format_for_song(beep_url, beep_file_name)
-
-        seconds_per_song = seconds_per_song - beep_length
-
-        download_song(beep_url, beep_file_name, beep_format)
-        trimmed_beep_file_name = trim_song(beep_file_name, beep_start, 0, beep_length)
-        intermediate_beep_file_name = create_intermediate_file(trimmed_beep_file_name)
-
 
     for line in list_file:
         list_file_all_lines.append(line)
 
     intermediate_file_list = []
-
     song_num = 1
     for index in range(0, len(list_file_all_lines), 3):
         song_url_index = index

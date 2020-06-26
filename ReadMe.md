@@ -6,6 +6,7 @@
 * Latest version of [ffmpeg](https://www.ffmpeg.org/download.html)
 * FFMPEG added to Path
 * Latest version of [youtube_dl](https://pypi.org/project/youtube_dl/)
+* youtube-dl added to Path
 
 ## Input
 The program input is a directory that includes a `list.txt` file.

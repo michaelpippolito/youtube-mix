@@ -1,11 +1,11 @@
 # Power Hour Creator - Python
 ## System Requirements
-* Windows
+* Windows (probably works on Linux but never tested maybe needs tweaking?)
 * Python 3.x
 * Pip
 * Latest version of [ffmpeg](https://www.ffmpeg.org/download.html)
 * FFMPEG added to Path
-* Latest version of Python [youtube_dl](https://pypi.org/project/youtube_dl/)
+* Latest version of [youtube_dl](https://pypi.org/project/youtube_dl/)
 
 ## Input
 The program input is a directory that includes a `list.txt` file.

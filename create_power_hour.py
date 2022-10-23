@@ -121,8 +121,8 @@ def timestamp_to_seconds(timestamp, file_name):
     try:
         minutes = int(timestamp[0:timestamp.index(":")])
         seconds = int(timestamp[timestamp.index(":") + 1:])
-        start_time = (minutes * 60) + seconds
-        return start_time
+        total_seconds = (minutes * 60) + seconds
+        return total_seconds
     except Exception as e:
         print("ERROR: Could not convert timestamp for", file_name)
         print(e)
@@ -318,9 +318,20 @@ if __name__ == "__main__":
 
         song_file_name = (song_name + "." + VIDEO_EXTENSION).replace("\n", "")
 
-        trim_thread = video_trimmer(song_file_name, song_timestamp, song_num, seconds_per_song)
-        trim_thread.start()
-        trim_threads.append(trim_thread)
+        end_timestamp = 0
+        start_timestamp = 0
+        if "-" in song_timestamp:
+            start_timestamp = timestamp_to_seconds(song_timestamp.split('-')[0], song_name)
+            end_timestamp = timestamp_to_seconds(song_timestamp.split('-')[1], song_name)
+            specified_song_seconds = end_timestamp - start_timestamp
+            
+            trim_thread = video_trimmer(song_file_name, song_timestamp.split('-')[0], song_num, specified_song_seconds)
+            trim_thread.start()
+            trim_threads.append(trim_thread)
+        else:
+            trim_thread = video_trimmer(song_file_name, song_timestamp, song_num, seconds_per_song)
+            trim_thread.start()
+            trim_threads.append(trim_thread)
 
         song_num += 1
 
